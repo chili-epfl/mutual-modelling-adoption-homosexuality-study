@@ -67,6 +67,19 @@ randomd<-as.data.frame(cbind(randomd1$meanDiff,randomd2$meanDiff))
 
 @
 
+\section{Video/Audio conditions}
+
+<<>>=
+# The first 30 subjets were in the video + audio conditions, while the last 30 were in audio only
+scoresVideo <- as.vector(cbind(d1$meanDiff, d2$meanDiff)[c(1:30),])
+scoresAudio <- as.vector(cbind(d1$meanDiff, d2$meanDiff)[c(31:60),])
+
+boxplot(cbind(scoresVideo, scoresAudio))
+t.test(scoresVideo, scoresAudio)
+@
+
+Subjects in the audio-only condition were (marginally) significantly better at modelling than the subjects in the video + audio condition.
+
 \section{Computation of $\Delta_1$}
 
 <<>>=
@@ -138,6 +151,8 @@ clusters$centers
 top <- max(d$meanTeam[clusters$cluster == 1])
 bottom <- min(d$meanTeam[clusters$cluster == 2])
 d$teamRating<-ifelse(d$meanTeam<=(top+bottom)/2,"good","bad")
+# or using a simple median cut...
+#d$teamRating<-ifelse(d$meanTeam<=median(d$meanTeam),"good","bad")
 @
 
 We finally re-run a t-test on this subset of the modellers:
@@ -158,6 +173,7 @@ for(i in seq(1, 60, by = 3)) {
   delta2[i+1]<-abs(d[i+1,1]-d[i+1,2])
   delta2[i+2]<-abs(d[i+2,1]-d[i+2,2])
 }
+sd(delta2)
 @
 
 As previously, we test $\Delta_2$ against randomly attributed scores to check if we observe any similar modelling behaviours between two persons judging the same third one (which would translate into significantly lower $\Delta_2$ compared to chance):
@@ -187,6 +203,7 @@ for(i in seq(1, 60, by = 3)) {
   delta3[i+1]<-abs(d[i,1]-d[i+2,2])
   delta3[i+2]<-abs(d[i,2]-d[i+1,2])
 }
+sd(delta3)
 @
 
 As previously, we test $\Delta_3$ against randomly attributed scores to check if we observe any similar modelling behaviours between two persons judging the same third one (which would translate into significantly lower $\Delta_3$ compared to chance):
